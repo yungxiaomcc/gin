@@ -95,16 +95,16 @@ const (
 type node struct {
 	path      string
 	indices   string
+	wildChild bool
+	nType     nodeType
+	priority  uint32
 	children  []*node
 	handlers  HandlersChain
-	priority  uint32
-	nType     nodeType
 	maxParams uint16
-	wildChild bool
 	// fullPath  string
 }
 
-// increments priority of the given child and reorders if necessary.
+// Increments priority of the given child and reorders if necessary
 func (n *node) incrementChildPrio(pos int) int {
 	cs := n.children
 	cs[pos].priority++
@@ -117,11 +117,11 @@ func (n *node) incrementChildPrio(pos int) int {
 		cs[newPos-1], cs[newPos] = cs[newPos], cs[newPos-1]
 	}
 
-	// build new index char string
+	// Build new index char string
 	if newPos != pos {
-		n.indices = n.indices[:newPos] + // unchanged prefix, might be empty
-			n.indices[pos:pos+1] + // the index char we move
-			n.indices[newPos:pos] + n.indices[pos+1:] // rest without char at 'pos'
+		n.indices = n.indices[:newPos] + // Unchanged prefix, might be empty
+			n.indices[pos:pos+1] + // The index char we move
+			n.indices[newPos:pos] + n.indices[pos+1:] // Rest without char at 'pos'
 	}
 
 	return newPos
