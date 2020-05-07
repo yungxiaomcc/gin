@@ -424,46 +424,15 @@ func (n *node) getValue(path string, po Params, unescape bool) (value nodeValue)
 walk: // Outer loop for walking the tree
 	for {
 		prefix := n.path
-		if path == prefix {
-			// We should have reached the node containing the handle.
-			// Check if this node has a handle registered.
-			if value.handlers = n.handlers; value.handlers != nil {
-				// value.fullPath = n.fullPath
-				return
-			}
-
-			// If there is no handle for this route, but this route has a
-			// wildcard child, there must be a handle for this path with an
-			// additional trailing slash
-			if path == "/" && n.wildChild && n.nType != root {
-				value.tsr = true
-				return
-			}
-
-			// No handle found. Check if a handle for this path + a
-			// trailing slash exists for trailing slash recommendation
-			for i, c := range []byte(n.indices) {
-				if c == '/' {
-					n = n.children[i]
-					value.tsr = (len(n.path) == 1 && n.handlers != nil) ||
-						(n.nType == catchAll && n.children[0].handlers != nil)
-					return
-				}
-			}
-
-			return
-		}
-
 		if len(path) > len(prefix) && path[:len(prefix)] == prefix {
 			path = path[len(prefix):]
 			// If this node does not have a wildcard (param or catchAll)
 			// child,  we can just look up the next child node and continue
 			// to walk down the tree
 			if !n.wildChild {
-				c := path[0]
-				indices := n.indices
-				for i, max := 0, len(indices); i < max; i++ {
-					if c == indices[i] {
+				idxc := path[0]
+				for i, c := range []byte(n.indices) {
+					if c == idxc {
 						n = n.children[i]
 						continue walk
 					}
@@ -552,6 +521,36 @@ walk: // Outer loop for walking the tree
 			default:
 				panic("invalid node type")
 			}
+		}
+
+		if path == prefix {
+			// We should have reached the node containing the handle.
+			// Check if this node has a handle registered.
+			if value.handlers = n.handlers; value.handlers != nil {
+				// value.fullPath = n.fullPath
+				return
+			}
+
+			// If there is no handle for this route, but this route has a
+			// wildcard child, there must be a handle for this path with an
+			// additional trailing slash
+			if path == "/" && n.wildChild && n.nType != root {
+				value.tsr = true
+				return
+			}
+
+			// No handle found. Check if a handle for this path + a
+			// trailing slash exists for trailing slash recommendation
+			for i, c := range []byte(n.indices) {
+				if c == '/' {
+					n = n.children[i]
+					value.tsr = (len(n.path) == 1 && n.handlers != nil) ||
+						(n.nType == catchAll && n.children[0].handlers != nil)
+					return
+				}
+			}
+
+			return
 		}
 
 		// Nothing found. We can recommend to redirect to the same URL with an
