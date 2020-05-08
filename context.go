@@ -67,12 +67,12 @@ type Context struct {
 	// Accepted defines a list of manually accepted formats for content negotiation.
 	Accepted []string
 
-	// queryCache use url.ParseQuery cached the param query result from c.Request.URL.Query()
-	queryCache url.Values
+	// // queryCache use url.ParseQuery cached the param query result from c.Request.URL.Query()
+	// queryCache url.Values
 
-	// formCache use url.ParseQuery cached PostForm contains the parsed form data from POST, PATCH,
-	// or PUT body parameters.
-	formCache url.Values
+	// // formCache use url.ParseQuery cached PostForm contains the parsed form data from POST, PATCH,
+	// // or PUT body parameters.
+	// formCache url.Values
 
 	// SameSite allows a server to define a cookie attribute making it impossible for
 	// the browser to send this cookie along with cross-site requests.
@@ -93,8 +93,8 @@ func (c *Context) reset() {
 	c.Keys = nil
 	c.Errors = c.Errors[0:0]
 	c.Accepted = nil
-	c.queryCache = nil
-	c.formCache = nil
+	// c.queryCache = nil
+	// c.formCache = nil
 }
 
 // Copy returns a copy of the current context that can be safely used outside the request's scope.
@@ -371,24 +371,24 @@ func (c *Context) Param(key string) string {
 // 	   c.Query("name") == "Manu"
 // 	   c.Query("value") == ""
 // 	   c.Query("wtf") == ""
-func (c *Context) Query(key string) string {
-	value, _ := c.GetQuery(key)
-	return value
-}
+// func (c *Context) Query(key string) string {
+// 	value, _ := c.GetQuery(key)
+// 	return value
+// }
 
-// DefaultQuery returns the keyed url query value if it exists,
-// otherwise it returns the specified defaultValue string.
-// See: Query() and GetQuery() for further information.
-//     GET /?name=Manu&lastname=
-//     c.DefaultQuery("name", "unknown") == "Manu"
-//     c.DefaultQuery("id", "none") == "none"
-//     c.DefaultQuery("lastname", "none") == ""
-func (c *Context) DefaultQuery(key, defaultValue string) string {
-	if value, ok := c.GetQuery(key); ok {
-		return value
-	}
-	return defaultValue
-}
+// // DefaultQuery returns the keyed url query value if it exists,
+// // otherwise it returns the specified defaultValue string.
+// // See: Query() and GetQuery() for further information.
+// //     GET /?name=Manu&lastname=
+// //     c.DefaultQuery("name", "unknown") == "Manu"
+// //     c.DefaultQuery("id", "none") == "none"
+// //     c.DefaultQuery("lastname", "none") == ""
+// func (c *Context) DefaultQuery(key, defaultValue string) string {
+// 	if value, ok := c.GetQuery(key); ok {
+// 		return value
+// 	}
+// 	return defaultValue
+// }
 
 // GetQuery is like Query(), it returns the keyed url query value
 // if it exists `(value, true)` (even when the value is an empty string),
@@ -398,65 +398,65 @@ func (c *Context) DefaultQuery(key, defaultValue string) string {
 //     ("Manu", true) == c.GetQuery("name")
 //     ("", false) == c.GetQuery("id")
 //     ("", true) == c.GetQuery("lastname")
-func (c *Context) GetQuery(key string) (string, bool) {
-	if values, ok := c.GetQueryArray(key); ok {
-		return values[0], ok
-	}
-	return "", false
-}
+// func (c *Context) GetQuery(key string) (string, bool) {
+// 	if values, ok := c.GetQueryArray(key); ok {
+// 		return values[0], ok
+// 	}
+// 	return "", false
+// }
 
 // QueryArray returns a slice of strings for a given query key.
 // The length of the slice depends on the number of params with the given key.
-func (c *Context) QueryArray(key string) []string {
-	values, _ := c.GetQueryArray(key)
-	return values
-}
+// func (c *Context) QueryArray(key string) []string {
+// 	values, _ := c.GetQueryArray(key)
+// 	return values
+// }
 
-func (c *Context) getQueryCache() {
-	if c.queryCache == nil {
-		c.queryCache = c.Request.URL.Query()
-	}
-}
+// func (c *Context) getQueryCache() {
+// 	if c.queryCache == nil {
+// 		c.queryCache = c.Request.URL.Query()
+// 	}
+// }
 
-// GetQueryArray returns a slice of strings for a given query key, plus
-// a boolean value whether at least one value exists for the given key.
-func (c *Context) GetQueryArray(key string) ([]string, bool) {
-	c.getQueryCache()
-	if values, ok := c.queryCache[key]; ok && len(values) > 0 {
-		return values, true
-	}
-	return []string{}, false
-}
+// // GetQueryArray returns a slice of strings for a given query key, plus
+// // a boolean value whether at least one value exists for the given key.
+// func (c *Context) GetQueryArray(key string) ([]string, bool) {
+// 	c.getQueryCache()
+// 	if values, ok := c.queryCache[key]; ok && len(values) > 0 {
+// 		return values, true
+// 	}
+// 	return []string{}, false
+// }
 
 // QueryMap returns a map for a given query key.
-func (c *Context) QueryMap(key string) map[string]string {
-	dicts, _ := c.GetQueryMap(key)
-	return dicts
-}
+// func (c *Context) QueryMap(key string) map[string]string {
+// 	dicts, _ := c.GetQueryMap(key)
+// 	return dicts
+// }
 
 // GetQueryMap returns a map for a given query key, plus a boolean value
 // whether at least one value exists for the given key.
-func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
-	c.getQueryCache()
-	return c.get(c.queryCache, key)
-}
+// func (c *Context) GetQueryMap(key string) (map[string]string, bool) {
+// 	c.getQueryCache()
+// 	return c.get(c.queryCache, key)
+// }
 
 // PostForm returns the specified key from a POST urlencoded form or multipart form
 // when it exists, otherwise it returns an empty string `("")`.
-func (c *Context) PostForm(key string) string {
-	value, _ := c.GetPostForm(key)
-	return value
-}
+// func (c *Context) PostForm(key string) string {
+// 	value, _ := c.GetPostForm(key)
+// 	return value
+// }
 
 // DefaultPostForm returns the specified key from a POST urlencoded form or multipart form
 // when it exists, otherwise it returns the specified defaultValue string.
 // See: PostForm() and GetPostForm() for further information.
-func (c *Context) DefaultPostForm(key, defaultValue string) string {
-	if value, ok := c.GetPostForm(key); ok {
-		return value
-	}
-	return defaultValue
-}
+// func (c *Context) DefaultPostForm(key, defaultValue string) string {
+// 	if value, ok := c.GetPostForm(key); ok {
+// 		return value
+// 	}
+// 	return defaultValue
+// }
 
 // GetPostForm is like PostForm(key). It returns the specified key from a POST urlencoded
 // form or multipart form when it exists `(value, true)` (even when the value is an empty string),
@@ -465,55 +465,55 @@ func (c *Context) DefaultPostForm(key, defaultValue string) string {
 //     email=mail@example.com  -->  ("mail@example.com", true) := GetPostForm("email") // set email to "mail@example.com"
 // 	   email=                  -->  ("", true) := GetPostForm("email") // set email to ""
 //                             -->  ("", false) := GetPostForm("email") // do nothing with email
-func (c *Context) GetPostForm(key string) (string, bool) {
-	if values, ok := c.GetPostFormArray(key); ok {
-		return values[0], ok
-	}
-	return "", false
-}
+// func (c *Context) GetPostForm(key string) (string, bool) {
+// 	if values, ok := c.GetPostFormArray(key); ok {
+// 		return values[0], ok
+// 	}
+// 	return "", false
+// }
 
 // PostFormArray returns a slice of strings for a given form key.
 // The length of the slice depends on the number of params with the given key.
-func (c *Context) PostFormArray(key string) []string {
-	values, _ := c.GetPostFormArray(key)
-	return values
-}
+// func (c *Context) PostFormArray(key string) []string {
+// 	values, _ := c.GetPostFormArray(key)
+// 	return values
+// }
 
-func (c *Context) getFormCache() {
-	if c.formCache == nil {
-		c.formCache = make(url.Values)
-		req := c.Request
-		if err := req.ParseMultipartForm(c.engine.MaxMultipartMemory); err != nil {
-			if err != http.ErrNotMultipart {
-				debugPrint("error on parse multipart form array: %v", err)
-			}
-		}
-		c.formCache = req.PostForm
-	}
-}
+// func (c *Context) getFormCache() {
+// 	if c.formCache == nil {
+// 		c.formCache = make(url.Values)
+// 		req := c.Request
+// 		if err := req.ParseMultipartForm(c.engine.MaxMultipartMemory); err != nil {
+// 			if err != http.ErrNotMultipart {
+// 				debugPrint("error on parse multipart form array: %v", err)
+// 			}
+// 		}
+// 		c.formCache = req.PostForm
+// 	}
+// }
 
 // GetPostFormArray returns a slice of strings for a given form key, plus
 // a boolean value whether at least one value exists for the given key.
-func (c *Context) GetPostFormArray(key string) ([]string, bool) {
-	c.getFormCache()
-	if values := c.formCache[key]; len(values) > 0 {
-		return values, true
-	}
-	return []string{}, false
-}
+// func (c *Context) GetPostFormArray(key string) ([]string, bool) {
+// 	c.getFormCache()
+// 	if values := c.formCache[key]; len(values) > 0 {
+// 		return values, true
+// 	}
+// 	return []string{}, false
+// }
 
 // PostFormMap returns a map for a given form key.
-func (c *Context) PostFormMap(key string) map[string]string {
-	dicts, _ := c.GetPostFormMap(key)
-	return dicts
-}
+// func (c *Context) PostFormMap(key string) map[string]string {
+// 	dicts, _ := c.GetPostFormMap(key)
+// 	return dicts
+// }
 
 // GetPostFormMap returns a map for a given form key, plus a boolean value
 // whether at least one value exists for the given key.
-func (c *Context) GetPostFormMap(key string) (map[string]string, bool) {
-	c.getFormCache()
-	return c.get(c.formCache, key)
-}
+// func (c *Context) GetPostFormMap(key string) (map[string]string, bool) {
+// 	c.getFormCache()
+// 	return c.get(c.formCache, key)
+// }
 
 // get is an internal method and returns a map which satisfy conditions.
 func (c *Context) get(m map[string][]string, key string) (map[string]string, bool) {
@@ -871,14 +871,14 @@ func (c *Context) SecureJSON(code int, obj interface{}) {
 // JSONP serializes the given struct as JSON into the response body.
 // It add padding to response body to request data from a server residing in a different domain than the client.
 // It also sets the Content-Type as "application/javascript".
-func (c *Context) JSONP(code int, obj interface{}) {
-	callback := c.DefaultQuery("callback", "")
-	if callback == "" {
-		c.Render(code, render.JSON{Data: obj})
-		return
-	}
-	c.Render(code, render.JsonpJSON{Callback: callback, Data: obj})
-}
+// func (c *Context) JSONP(code int, obj interface{}) {
+// 	callback := c.DefaultQuery("callback", "")
+// 	if callback == "" {
+// 		c.Render(code, render.JSON{Data: obj})
+// 		return
+// 	}
+// 	c.Render(code, render.JsonpJSON{Callback: callback, Data: obj})
+// }
 
 // JSON serializes the given struct as JSON into the response body.
 // It also sets the Content-Type as "application/json".
