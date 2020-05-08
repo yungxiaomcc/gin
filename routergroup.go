@@ -69,9 +69,9 @@ func (group *RouterGroup) BasePath() string {
 }
 
 func (group *RouterGroup) handle(httpMethod, relativePath string, handlers HandlersChain) IRoutes {
-	// absolutePath := group.calculateAbsolutePath(relativePath)
-	// handlers = group.combineHandlers(handlers)
-	group.engine.addRoute(httpMethod, relativePath, handlers)
+	absolutePath := group.calculateAbsolutePath(relativePath)
+	handlers = group.combineHandlers(handlers)
+	group.engine.addRoute(httpMethod, absolutePath, handlers)
 	return group.returnObj()
 }
 
