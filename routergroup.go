@@ -7,7 +7,6 @@ package gin
 import (
 	"net/http"
 	"path"
-	"regexp"
 	"strings"
 )
 
@@ -87,9 +86,9 @@ func (group *RouterGroup) handle(httpMethod, relativePath string, handlers Handl
 // frequently used, non-standardized or custom methods (e.g. for internal
 // communication with a proxy).
 func (group *RouterGroup) Handle(httpMethod, relativePath string, handlers ...HandlerFunc) IRoutes {
-	if matches, err := regexp.MatchString("^[A-Z]+$", httpMethod); !matches || err != nil {
-		panic("http method " + httpMethod + " is not valid")
-	}
+	// if matches, err := regexp.MatchString("^[A-Z]+$", httpMethod); !matches || err != nil {
+	// 	panic("http method " + httpMethod + " is not valid")
+	// }
 	return group.handle(httpMethod, relativePath, handlers)
 }
 
