@@ -85,7 +85,7 @@ func longestCommonPrefix(a, b string) int {
 
 func countParams(path string) uint16 {
 	var n uint
-	for i := range []byte(path) {
+	for i := range strToBytes(path) {
 		switch path[i] {
 		case ':', '*':
 			n++
@@ -260,7 +260,7 @@ walk:
 // Returns -1 as index, if no wildcard was found.
 func findWildcard(path string) (wildcard string, i int, valid bool) {
 	// Find start
-	for start, c := range []byte(path) {
+	for start, c := range strToBytes(path) {
 		// A wildcard starts with ':' (param) or '*' (catch-all)
 		if c != ':' && c != '*' {
 			continue
@@ -268,7 +268,7 @@ func findWildcard(path string) (wildcard string, i int, valid bool) {
 
 		// Find end and check for invalid characters
 		valid = true
-		for end, c := range []byte(path[start+1:]) {
+		for end, c := range strToBytes(path[start+1:]) {
 			switch c {
 			case '/':
 				return path[start : start+1+end], start, valid
@@ -416,7 +416,7 @@ walk: // Outer loop for walking the tree
 				// to walk down the tree
 				if !n.wildChild {
 					idxc := path[0]
-					for i, c := range []byte(n.indices) {
+					for i, c := range strToBytes(n.indices) {
 						if c == idxc {
 							n = n.children[i]
 							continue walk
@@ -534,7 +534,7 @@ walk: // Outer loop for walking the tree
 
 			// No handle found. Check if a handle for this path + a
 			// trailing slash exists for trailing slash recommendation
-			for i, c := range []byte(n.indices) {
+			for i, c := range strToBytes(n.indices) {
 				if c == '/' {
 					n = n.children[i]
 					value.tsr = (len(n.path) == 1 && n.handlers != nil) ||
@@ -617,7 +617,7 @@ walk: // Outer loop for walking the tree
 				if rb[0] != 0 {
 					// Old rune not finished
 					idxc := rb[0]
-					for i, c := range []byte(n.indices) {
+					for i, c := range strToBytes(n.indices) {
 						if c == idxc {
 							// continue with child node
 							n = n.children[i]
@@ -649,7 +649,7 @@ walk: // Outer loop for walking the tree
 					rb = shiftNRuneBytes(rb, off)
 
 					idxc := rb[0]
-					for i, c := range []byte(n.indices) {
+					for i, c := range strToBytes(n.indices) {
 						// Lowercase matches
 						if c == idxc {
 							// must use a recursive approach since both the
@@ -671,7 +671,7 @@ walk: // Outer loop for walking the tree
 						rb = shiftNRuneBytes(rb, off)
 
 						idxc := rb[0]
-						for i, c := range []byte(n.indices) {
+						for i, c := range strToBytes(n.indices) {
 							// Uppercase matches
 							if c == idxc {
 								// Continue with child node
@@ -751,7 +751,7 @@ walk: // Outer loop for walking the tree
 			// No handle found.
 			// Try to fix the path by adding a trailing slash
 			if fixTrailingSlash {
-				for i, c := range []byte(n.indices) {
+				for i, c := range strToBytes(n.indices) {
 					if c == '/' {
 						n = n.children[i]
 						if (len(n.path) == 1 && n.handlers != nil) ||
